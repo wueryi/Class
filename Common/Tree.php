@@ -1,8 +1,4 @@
 <?php
-
-namespace App\Common;
-use Illuminate\Support\Facades\Log;
-
 /**
  * 通用的树型类，可以生成任何树型结构
  */

@@ -247,14 +247,17 @@ class CmstopClient
                             }
                         }
 
-                        $file = '@' . $multipart['file'];
-                        $file .= ';filename=' . $multipart['filename'];
-                        $file .= ';type=' . $multipart['type'];
-
-                        $params['file'] = $file;
-
-                        if (PHP_VERSION >= '5.6.0') {
-                            curl_setopt($curl, CURLOPT_SAFE_UPLOAD, false);
+                        if (class_exists('CURLFile')) {//>=5.5
+                            curl_setopt($curl, CURLOPT_SAFE_UPLOAD, true);
+                            $params['file'] =  new CURLFile($multipart['file'],$multipart['type'],$multipart['filename']);
+                        }else {//<=5.5
+                            if (defined('CURLOPT_SAFE_UPLOAD')) {
+                                curl_setopt($curl, CURLOPT_SAFE_UPLOAD, false);
+                            }
+                            $file = '@' . $multipart['file'];
+                            $file .= ';filename=' . $multipart['filename'];
+                            $file .= ';type=' . $multipart['type'];
+                            $params['file'] =$file;
                         }
 
                         @curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
